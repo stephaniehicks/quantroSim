@@ -1,0 +1,10 @@
+.Rproj.user
+.Rhistory
+.RData
+*.Rproj
+.DS_Store
+.Rbuildignore
+.Rapp.history
+R/.Rapp.history
+vignettes/.DS_Store
+man/.DS_Store
