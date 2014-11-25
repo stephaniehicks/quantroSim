@@ -30,6 +30,8 @@
 #' \item{errMeth}{Simulated measurement error for methylation values}
 #' \item{errUnmeth}{Simulated measurement error for unmethylation values}
 #' 
+#' @import MASS
+#' 
 #' @author Stephanie Hicks
 #' @export
 #' @examples

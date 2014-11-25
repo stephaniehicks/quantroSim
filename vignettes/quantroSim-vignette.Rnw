@@ -1,0 +1,414 @@
+%\VignetteIndexEntry{The quantroSim user's guide}
+%\VignettePackage{quantroSim}
+%\VignetteEngine{knitr::knitr}
+\documentclass{article}
+
+<<style-knitr, eval=TRUE, echo=FALSE, results="asis">>=
+    BiocStyle::latex()
+@
+
+\setlength{\parskip}{1\baselineskip}
+\setlength{\parindent}{0pt}
+
+\title{The \texttt{quantroSim} user's guide}
+\author{Stephanie C. Hicks \texttt{shicks@jimmy.harvard.edu} \and
+Rafael A. Irizarry \texttt{rafa@jimmy.harvard.edu} }
+
+\date{Modified: November 24, 2014.  Compiled: \today}
+
+
+\begin{document}
+
+\maketitle
+ 
+\tableofcontents
+
+\section{Introduction}
+
+This \texttt{quantroSim} package is the supporting data simulation 
+package for the R/Bioconductor package \texttt{quantro}.  This 
+R package is designed to simulate gene expression and DNA methylation
+data. This document describes the classes, functions and tools 
+available in the \texttt{quantroSim} package. 
+
+The features in this package include: 
+
+\begin{enumerate} 
+\item Simulate gene expression samples based on microarrays
+\item Simulate DNA methylation samples based on microarrays
+\item Control the proportion of differences (\texttt{pDiff}) between $K$ groups
+\item Vary the magnitude of technical variation observed in samples
+\end{enumerate}
+
+\section{Getting Started}
+
+To install the package, you can check out the Github repository 
+\url{https://github.com/stephaniehicks/quantroSim} and install from source 
+or use the \texttt{devtools} R package:
+
+<<install-lib, eval=FALSE, echo=TRUE>>=
+library(devtools)
+install_github(repo = "quantroSim", username = "stephaniehicks")
+@
+
+After installation, load the package in R using
+<<lib-load, message=FALSE>>=
+library(quantroSim)
+@
+
+The \texttt{quantroSim} package depends the \texttt{MASS}, \texttt{quantro}, 
+\texttt{minfi} and \texttt{affy} R-packages and suggests the 
+\texttt{knitr} R-package.  
+
+
+\section{DNA Methylation}
+There are two main functions used to generate simulated DNA methylation data: 
+\texttt{simulateMethTruth} and \texttt{simulateMeth}. The first function 
+(\texttt{simulateMethTruth}) generates the true DNA methylation without any 
+consideration for a platform technology. The second function 
+(\texttt{simulateMeth}) simulates observed DNA methylation based on: 
+
+\begin{enumerate}
+\item the platform technology 
+\item the magnitude of technical variation
+\end{enumerate}
+
+\subsection{Quick Start}
+To simulate the true level DNA methylation for a set of 2 groups, use the 
+\texttt{simulateMethTruth} function. 
+<<methTruth-Fig, fig.width=10, fig.height=5>>=
+set.seed(999)
+methTruth <- simulateMethTruth(nProbes = 2e4, nGroups = 2, 
+                               pDiff = 0.05, pUp = 0.80)
+plotMethTruth(methTruth)
+@
+
+\texttt{pDiff} is percent of probes different relative to Group 1. If 
+\texttt{nGroups} = 1, \texttt{pDiff} should be 0. If \texttt{nGroups} $>$ 1, 
+the length of \texttt{pDiff} should be equal to \texttt{nGroups} - 1. The 
+default for \texttt{nGroups} is 2 and the default for \texttt{pDiff} is 0.05.  
+
+Similarly, \texttt{pUp} is proportion of \texttt{pDiff} probes that are 
+methylated relative to Group 1. If \texttt{nGroups} = 1, \texttt{pUp} is 
+ignored. If \texttt{nGroups} $>$ 1, the length of \texttt{pUp} should be 
+equal to \texttt{nGroups} - 1.  The default for \texttt{nGroups} is 2 and 
+the default for \texttt{pUp} is 0.80.
+
+The main output will be a matrix (\texttt{methRange}) of dimension 
+\texttt{nProbes} x \texttt{nGroups}. 
+<<methTruth-summary>>=
+dim(methTruth$methRange)
+@
+
+The correlation between the two groups is given by:
+<<methTruth-cor>>=
+cor(methTruth$methRange)
+@
+
+If \texttt{pDiff} was given, there will be \texttt{pDiff} $\times$ 
+\texttt{nProbes} differences between the two groups. A boolean vector 
+referring to which probes are different is in the \texttt{methTruth} object 
+called \texttt{methDiffInd}.  Here we list the indicies of which probes 
+are different between the groups: 
+<<methTruth-ind>>=
+head(which(methTruth$methDiffInd))
+@
+
+
+To simulate observed DNA methylation data based on a specific technology 
+platform, use the \texttt{simulateMeth} function. First, a platform from 
+\texttt{list.meth.platforms} must be selected:
+<<meth-platforms>>=
+list.meth.platforms()
+@
+
+Once a platform has been selected, 
+<<meth-figs, fig.width=12, fig.height=8>>=
+set.seed(999)
+simMeth <- simulateMeth(methTruth,  meth.platform = "methArrays", 
+                        nSamps = 5, nMol = 1e6)
+plotMeth(simMeth)
+@
+
+<<meth-summary>>=
+summary(simMeth$meth)
+@
+
+
+\subsection{Simulating 2 or more groups}
+
+To simulate the true level DNA methylation for a set of 2 or more groups, 
+again use the the same \texttt{simulateMethTruth} function, but change 
+\texttt{nGroup} and the length of \texttt{pDiff} and \texttt{pUp} 
+<<methTruth-Fig-3groups, fig.width=10, fig.height=5>>=
+set.seed(999)
+methTruth <- simulateMethTruth(nProbes = 2e4, nGroups = 3, 
+                               pDiff = c(0.05, 0.10), pUp = c(0.80, 0.80))
+plotMethTruth(methTruth)
+@
+
+
+<<meth-figs-3groups, fig.width=12, fig.height=8>>=
+set.seed(999)
+simMeth <- simulateMeth(methTruth,  meth.platform = "methArrays", 
+                        nSamps = 5, nMol = 1e6)
+plotMeth(simMeth)
+@
+
+
+\subsection{Exporting DNA Methylation arrays to the \texttt{minfi} R-package}
+
+To export the simulated DNA methylation object to \texttt{mini}, 
+use the \texttt{getMethylSet} function. 
+<<getMethylSet>>=
+mset <- getMethylSet(simMeth)
+class(mset)
+head(minfi::getBeta(mset))
+@
+
+Functions in the \texttt{minfi} R/Bioconductor package such as \texttt{getBeta}, \texttt{getM}, \texttt{getCN} can be used after creating a \texttt{MethylSet} with the function \texttt{getMethylSet}. 
+
+Note: there is no manifest and no method was used to preprocess the 
+simulated data. Therefore, these functions from \texttt{minfi} will not work.  
+<<getManifest, eval=FALSE>>=
+getManifest(mset)
+preprocessMethod(mset)
+@
+
+\subsection{Additional options for \texttt{simulateMeth}}
+
+\subsubsection{Controlling level of technical variation}
+We use the Langmuir model to simulate chemical saturation observed using 
+microarrays. Our model to simulate raw methylation and unmethylation value 
+for the $j^{th}$ probe from the $i^{th}$ sample in the $k^{th}$ group is 
+given by
+\[ M_{ijk} = o_{ijk} + d_{ijk} + a_{ijk} ( \frac{x_{jk}^m}{x_{jk}^m + b_{ijk}} ) \epsilon_{ijk} \]
+\[ U_{ijk} = o_{ijk} + d_{ijk} + a_{ijk}  ( \frac{x_{jk}^u}{x_{jk}^u + b_{ijk}} ) \epsilon_{ijk} \]
+where $x_{jk}^m$ and $x_{jk}^u$ are the expected number of methylated and 
+unmethylated molecules at $j^{th}$ probe in the $k^{th}$ group and the rest 
+are parameters simulated from a log Normal distribution with a given set of 
+hyperparameters. For example, $a_{ijk} = a_{ik} * a_j$ represents the 
+florescence intensity from the scanner. We define $a_{ijk} = a_{ik} * a_j$ 
+and let both parameters $a_{ik}$ (sample-level noise) and $a_j$ 
+(probe-level noise) each have their own hyperparameters to allow for 
+global shifts: 
+\[ \log_2(a_{ik}) \sim  N(16, 0.1) \]
+\[ \log_2(a_{j}) \sim N(0, 0.01)  \]
+
+Similarly, $b_{ijk} = b_{ik} * b_j$ and $o_{ijk} = o_{ik} * o_j$ 
+(optical noise) where the sample-level noise is simulated using
+\[ \log_2(b_{ik}) \sim  N(22, 0.1) \]
+\[ \log_2(o_{ik}) \sim  N(5, 1) \]
+\[ \log_2(d_{ijk}) \sim  N(5, 1) \]
+\[ \log_2(\epsilon_{ijk}) \sim  N(0, 1) \]
+
+For efficiency, we simulate the parameters from a multivariate normal 
+distribution for all 10 arrays (=5 samples per group * 2 groups). In the 
+above example, covariance matrices would be given by:
+<<simMeth-figs2, fig.width=12, fig.height=8>>=
+set.seed(999)
+siga = sigb = 0.1 * diag(10)
+sigOpt = 1 * diag(10)
+
+methTruth <- simulateMethTruth(nProbes = 2e4, nGroups = 2, 
+                               pDiff = 0.05, pUp = 0.80)
+simMeth <- simulateMeth(methTruth,  meth.platform = "methArrays", 
+                        nSamps = 5, nMol = 1e6, 
+                        siga = siga, sigb = sigb, sigOpt = sigOpt)
+plotMeth(simMeth)
+@
+These are the default values for the (\texttt{siga}, \texttt{sigb} 
+and \texttt{sibOpt}) parameters in the \texttt{simulateMeth} function. 
+
+To control how much technical variation is induced from the 
+platform-technology, the variance hyperparameters from the sample-level 
+noise (\texttt{siga}, \texttt{sigb} and \texttt{sibOpt}) can be 
+controlled manually.
+<<simMeth-figs3, fig.width=12, fig.height=8>>=
+set.seed(999)
+siga = sigb = 1 * diag(10)
+sigOpt = 2 * diag(10)
+simMeth <- simulateMeth(methTruth,  meth.platform = "methArrays", 
+                        nSamps = 5, nMol = 1e6, 
+                        siga = siga, sigb = sigb, sigOpt = sigOpt)
+plotMeth(simMeth)
+@
+
+
+
+
+
+
+
+\section{Gene Expression}
+There are two main functions used to generate simulated gene expression data: 
+\texttt{simulateGExTruth} and \texttt{simulateGEx}. The first function 
+(\texttt{simulateGExTruth}) generates the true gene expression without any 
+consideration for a platform technology. The second function 
+(\texttt{simulateGEx}) simulates observed gene expression based on: 
+
+\begin{enumerate}
+\item the platform technology 
+\item the magnitude of technical variation
+\end{enumerate}
+
+
+\subsection{Quick Start}
+To simulate the true level gene expression for a set of 2 groups, use the 
+\texttt{simulateGExTruth} function. 
+<<geneTruth-Fig, fig.width=10, fig.height=5>>=
+set.seed(999)
+geneTruth <- simulateGExTruth(nGenes = 2e4, nGroups = 2,  
+                              pDiff = 0.05, foldDiff = 5)
+plotGExTruth(geneTruth)
+@
+
+Similar to \texttt{simulateMethTruth}, \texttt{pDiff} is percent of probes 
+different relative to Group 1. If \texttt{nGroups} = 1, \texttt{pDiff} 
+should be 0. If \texttt{nGroups} $>$ 1, the length of \texttt{pDiff} should 
+be equal to \texttt{nGroups} - 1. The default for \texttt{nGroups} is 2 and 
+the default for \texttt{pDiff} is 0.05.  
+
+\texttt{foldDiff} is the fold difference of gene differentially expressed in 
+one group relative to Group 1. If \texttt{nGroups} = 1, \texttt{foldDiff} is 
+ignored. If \texttt{nGroups} $>$ 1, the length of \texttt{foldDiff} should be 
+equal to \texttt{nGroups} - 1.  The default for \texttt{nGroups} is 2 and 
+the default for \texttt{foldDiff} is 5.
+
+The main output will be a matrix (\texttt{geneRange}) of dimension 
+\texttt{nGenes} x \texttt{nGroups}. 
+<<geneTruth-summary>>=
+dim(geneTruth$geneRange)
+@
+
+The correlation between the two groups is given by:
+<<geneTruth-cor>>=
+cor(geneTruth$geneRange)
+@
+
+If \texttt{pDiff} was given, there will be \texttt{pDiff} $\times$ 
+\texttt{nGenes} differences between the two groups. A boolean vector 
+referring to which genes are different is in the \texttt{geneTruth} object 
+called \texttt{genesDiffInd}.  Here we list the indicies of which genes 
+are different between the groups: 
+<<geneTruth-ind>>=
+head(which(geneTruth$genesDiffInd))
+@
+
+
+To simulate observed gene expression data based on a specific technology 
+platform, use the \texttt{simulateGEx} function. First, a platform from 
+\texttt{list.GEx.platforms} must be selected:
+<<gene-platforms>>=
+list.GEx.platforms()
+@
+
+Once a platform has been selected, 
+<<gene-figs, fig.width=12, fig.height=6>>=
+set.seed(999)
+sim <- simulateGEx(geneTruth,  GEx.platform = "GExArrays", nSamps = 5)
+plotGEx(sim)
+@
+
+<<gene-summary>>=
+summary(simMeth$meth)
+@
+
+
+
+
+
+\subsection{Simulating 2 or more groups}
+
+To simulate the true level gene expression for a set of 2 or more groups, 
+again use the the same \texttt{simulateGExTruth} function, but change 
+\texttt{nGroup} and the length of \texttt{pDiff} and \texttt{foldDiff} 
+<<geneTruth-Fig-3groups, fig.width=10, fig.height=5>>=
+set.seed(999)
+geneTruth <- simulateGExTruth(nGenes = 2e4, nGroups = 3,  
+                              pDiff = c(0.05, 0.10), foldDiff = c(5,5))
+plotGExTruth(geneTruth)
+@
+
+
+<<gene-figs-3groups, fig.width=12, fig.height=6>>=
+set.seed(999)
+sim <- simulateGEx(geneTruth,  GEx.platform = "GExArrays", nSamps = 5)
+plotGEx(sim)
+@
+
+
+
+
+\subsection{Additional options for \texttt{simulateGEx}}
+
+\subsubsection{Controlling level of technical variation}
+
+We use the Langmuir model to simulate chemical saturation observed using 
+microarrays. Our model to simulate raw Perfect Match (PM) value for 
+the $j^{th}$ probe from the $i^{th}$ sample in the $k^{th}$ group is given by
+\[ PM_{ijk} = o_{ijk} + d_{ijk} + a_{ijk} ( \frac{x_{jk}}{x_{jk} + b_{ijk}} ) 
+\epsilon_{ijk}  \]
+where $x_{jk}$ is the number of RNA molecules at $j^{th}$ probe in the 
+$k^{th}$ group and the rest are parameters simulated from a log Normal 
+distribution with a given set of hyperparameters, similar to simulating 
+DNA methylation: 
+\[ \log_2(a_{ik}) \sim  N(20, 0.1) \]
+\[ \log_2(b_{ik}) \sim  N(18, 0.1) \]
+\[ \log_2(o_{ik}) \sim  N(5, 0.1) \]
+\[ \log_2(d_{ijk}) \sim  N(5, 1) \]
+\[ \log_2(\epsilon_{ijk}) \sim  N(0, 1) \]
+
+For efficiency, we simulate the parameters from a multivariate normal 
+distribution for all 10 arrays (=5 samples per group * 2 groups). In the 
+above example, covariance matrices would be given by:
+<<simGene-figs2, fig.width=12, fig.height=6>>=
+set.seed(999)
+siga = sigb = 0.1 * diag(10)
+sigOpt = 0.1 * diag(10)
+
+geneTruth <- simulateGExTruth(nGenes = 2e4, nGroups = 2,  
+                              pDiff = 0.05, foldDiff = 5)
+sim <- simulateGEx(geneTruth,  GEx.platform = "GExArrays", nSamps = 5, 
+                   siga = siga, sigb = sigb, sigOpt = sigOpt)
+plotGEx(sim)
+@
+These are the default values for the (\texttt{siga}, \texttt{sigb} 
+and \texttt{sibOpt}) parameters in the \texttt{simulateGEx} function. 
+
+To control how much technical variation is induced from the 
+platform-technology, the variance hyperparameters from the sample-level 
+noise (\texttt{siga}, \texttt{sigb} and \texttt{sibOpt}) can be 
+controlled manually.
+<<simGene-figs3, fig.width=12, fig.height=6>>=
+set.seed(999)
+siga = sigb = 1 * diag(10)
+sigOpt = 1 * diag(10)
+
+geneTruth <- simulateGExTruth(nGenes = 2e4, nGroups = 2,  
+                              pDiff = 0.05, foldDiff = 5)
+sim <- simulateGEx(geneTruth,  GEx.platform = "GExArrays", nSamps = 5, 
+                   siga = siga, sigb = sigb, sigOpt = sigOpt)
+plotGEx(sim)
+@
+
+
+
+\section{Getting Help}
+For more help, open the HTML help file:
+<<help,eval=FALSE>>=
+help(package = 'quantroSim', help_type = 'html')
+@
+
+
+\section{SessionInfo}
+
+<<sessionInfo,results ='markup'>>=
+sessionInfo()
+@
+
+
+% \bibliography{library}
+
+
+\end{document}

@@ -28,6 +28,8 @@
 #' \item{d}{Simulated d values for the Langmuir Adsorption model} 
 #' \item{opt}{Simulated optical noise}
 #' \item{errPM}{Simulated measurement error }
+#'
+#' @import MASS
 #' 
 #' @author Stephanie Hicks
 #' @export

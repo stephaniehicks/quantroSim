@@ -7,7 +7,9 @@
 #' \code{simulateGExTruth}. 
 #'
 #' @return The distribution of simulated RNA molecules for each gene in 
-#' each group. 
+#' each group.
+#' 
+#' @import Biobase minfi quantro
 #' 
 #' @export
 #' @examples
@@ -17,7 +19,7 @@
 plotGExTruth <- function(simulateGExTruthObject)
 { 
   if(!exists("objectType", where = simulateGExTruthObject)){
-    stop("[epigenomeSim]: Must supply a gene expression object created 
+    stop("[quantroSim]: Must supply a gene expression object created 
          from simulateGExTruth().")
   }
   
@@ -111,7 +113,7 @@ plotGEx <- function(simulateGExObject)
 plotMethTruth <- function(simulateMethTruthObject)
 { 
   if(!exists("objectType", where = simulateMethTruthObject)){
-    stop("[epigenomeSim]: Must supply a DNA Methylation object created from 
+    stop("[quantroSim]: Must supply a DNA Methylation object created from 
          simulateMethTruth().")
   }
   

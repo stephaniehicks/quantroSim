@@ -50,42 +50,42 @@ simulateGExTruth <- function(nGenes, nGroups = 2, muHyp = NULL, sigHyp = NULL,
 
 {
   if((nGroups > 1) && (length(pDiff) != (nGroups-1))){ 
-    stop("[epigenomeSim]: pDiff must have length (nGroups - 1) if nGroups > 
+    stop("[quantroSim]: pDiff must have length (nGroups - 1) if nGroups > 
          1")}
 
   if((nGroups == 1) && ((length(pDiff) != 1) || (pDiff != 0) )){
-    warning("[epigenomeSim]: Cannot simulate differences between more than 
+    warning("[quantroSim]: Cannot simulate differences between more than 
             one group if only one group exists. Using pDiff = 0.")
     pDiff = 0
   }
   
   if((nGroups > 1) && (length(foldDiff) != (nGroups-1))){ 
-    stop("[epigenomeSim]: foldDiff must have length (nGroups - 1) if 
+    stop("[quantroSim]: foldDiff must have length (nGroups - 1) if 
          nGroups > 1")}
   
   if((nGroups == 1) && (length(foldDiff) != 1)){
-    stop("[epigenomeSim]: Cannot simulate differences between more than one 
+    stop("[quantroSim]: Cannot simulate differences between more than one 
           group if only one group exists. Fold diff should be length 1. ")}
     
   if( any(pDiff < 0) || any(pDiff > 1) ){
-    stop("[epigenomeSim]: pDiff must be between 0 and 1.")}
+    stop("[quantroSim]: pDiff must be between 0 and 1.")}
 
   if( (zeroWeight < 0) || (zeroWeight > 1) ){
-    stop("[epigenomeSim]: zeroWeight must be between 0 and 1.")}
+    stop("[quantroSim]: zeroWeight must be between 0 and 1.")}
 
   if(!is.null(muHyp) && (nGenes != length(muHyp))){ 
-    stop("[epigenomeSim]: Hyperparameters for muHyp must be equal to number 
+    stop("[quantroSim]: Hyperparameters for muHyp must be equal to number 
          of genes.")}
   
   if(!is.null(sigHyp) && (nGenes != length(sigHyp))){ 
-    stop("[epigenomeSim]: Hyperparameters for sigHyp must be equal to number 
+    stop("[quantroSim]: Hyperparameters for sigHyp must be equal to number 
          of genes.")}
 
   poisMeanVals <- pickLogNormal(N = nGenes, muHyp = muHyp, sigHyp = sigHyp)
 
   rangeMu <- range(poisMeanVals)
   if(verbose){
-      mes <- "[epigenomeSim]: Simulating RNA transcript counts using a Poisson 
+      mes <- "[quantroSim]: Simulating RNA transcript counts using a Poisson 
           distribution with mean parameters from %.2f to %.2f"
       message(sprintf(mes, rangeMu[1], rangeMu[2]))
   }    

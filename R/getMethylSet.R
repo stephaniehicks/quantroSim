@@ -11,6 +11,8 @@
 #'
 #' @return A \code{MethylSet} object
 #' 
+#' @import minfi Biobase
+#' 
 #' @author Stephanie Hicks
 #' @export
 #' @examples

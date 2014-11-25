@@ -44,7 +44,6 @@ pickLangmuir <- function(objectType, typePlatform, nProbes, nSamps, nGroups,
 {
 	if(objectType == "simulateGExTruthObject"){
     if(typePlatform == "GExArrays"){ .langmuirFunction <- langmuirGExArrays }
-    if(typePlatform == "RNASeq"){ .langmuirFunction <- langmuirRNASeq }
 	}
 	
 	if(objectType == "simulateMethTruthObject"){

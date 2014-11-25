@@ -51,29 +51,29 @@ simulateMethTruth <- function(nProbes, nGroups = 2, nMixtures = 3,
                               verbose = TRUE)
 {
   if((nGroups > 1) && (length(pDiff) != (nGroups-1))){ 
-    stop("[epigenomeSim]: pDiff must have length (nGroups - 1) if nGroups > 
+    stop("[quantroSim]: pDiff must have length (nGroups - 1) if nGroups > 
          1")}
   
   if((nGroups == 1) && ((length(pDiff) != 1) || (pDiff != 0) )){
-    warning("[epigenomeSim]: Cannot simulate differences between more than 
+    warning("[quantroSim]: Cannot simulate differences between more than 
             one group if only one group exists. Using pDiff = 0.")
     pDiff = 0
   }
     
   if((nGroups > 1) && (length(pUp) != (nGroups-1))){ 
-    stop("[epigenomeSim]: pUp must have length (nGroups - 1) if 
+    stop("[quantroSim]: pUp must have length (nGroups - 1) if 
          nGroups > 1")}
   
   if((nGroups == 1) && (length(pUp) != 1)){
-    stop("[epigenomeSim]: Cannot simulate differences between more than one 
+    stop("[quantroSim]: Cannot simulate differences between more than one 
           group if only one group exists. pUp should be length 1. ")}
   
   if( any(pDiff < 0) || any(pDiff > 1) ){
-    stop("[epigenomeSim]: pDiff must be between 0 and 1.")}
+    stop("[quantroSim]: pDiff must be between 0 and 1.")}
   
   if((nMixtures != 3) && (is.null(propMixtures) || 
                           is.null(muMixtures) || is.null(sigMixtures)) ){
-    stop("[epigenomeSim]: If number of mixtures (nMixtures) is not 3, user 
+    stop("[quantroSim]: If number of mixtures (nMixtures) is not 3, user 
          must supply mixing proportions (propMixtures), mean (muMixtures) 
          and variance (sigMixtures).")
   }
@@ -81,7 +81,7 @@ simulateMethTruth <- function(nProbes, nGroups = 2, nMixtures = 3,
   if( (!is.null(propMixtures) && (nMixtures != length(propMixtures)) ) ||
         (!is.null(muMixtures) && (nMixtures != length(muMixtures)) ) ||
         (!is.null(sigMixtures) && (nMixtures != length(sigMixtures)) ) ){
-    stop("[epigenomeSim]: Length of propMixtures, muMixtures and sigMixtures 
+    stop("[quantroSim]: Length of propMixtures, muMixtures and sigMixtures 
          must be same as nMixtures.")
   }
   
@@ -93,7 +93,7 @@ simulateMethTruth <- function(nProbes, nGroups = 2, nMixtures = 3,
   sig <- results$trueParams$sigMix
   
   if(verbose){
-    mes <- "[epigenomeSim]: Simulating a mixture of %d Normal distributions 
+    mes <- "[quantroSim]: Simulating a mixture of %d Normal distributions 
             with mean (%s) and standard deviation (%s)"
     message(sprintf(mes, nMixtures, paste(mu, collapse=', '), 
                     paste(sig, collapse=', ')))

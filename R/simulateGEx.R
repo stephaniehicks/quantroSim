@@ -131,10 +131,6 @@ simulateGEx <- function(simulateGExTruthObject, GEx.platform = "GExArrays",
                    "probeRange" = probeRange, "PM" = round(PM, 0))
 	}
 	
-	if(GEx.platform == "RNASeq"){
-		output <- "RNA-Seq coming soon."
-	}
-	
 	return(output)
 }
 

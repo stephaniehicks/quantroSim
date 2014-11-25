@@ -1,0 +1,15 @@
+\contentsline {section}{\numberline {1}Introduction}{1}{section.1}
+\contentsline {section}{\numberline {2}Getting Started}{2}{section.2}
+\contentsline {section}{\numberline {3}DNA Methylation}{2}{section.3}
+\contentsline {subsection}{\numberline {3.1}Quick Start}{2}{subsection.3.1}
+\contentsline {subsection}{\numberline {3.2}Simulating 2 or more groups}{5}{subsection.3.2}
+\contentsline {subsection}{\numberline {3.3}Exporting DNA Methylation arrays to the \texttt {minfi} R-package}{6}{subsection.3.3}
+\contentsline {subsection}{\numberline {3.4}Additional options for \texttt {simulateMeth}}{7}{subsection.3.4}
+\contentsline {subsubsection}{\numberline {3.4.1}Controlling level of technical variation}{7}{subsubsection.3.4.1}
+\contentsline {section}{\numberline {4}Gene Expression}{9}{section.4}
+\contentsline {subsection}{\numberline {4.1}Quick Start}{10}{subsection.4.1}
+\contentsline {subsection}{\numberline {4.2}Simulating 2 or more groups}{12}{subsection.4.2}
+\contentsline {subsection}{\numberline {4.3}Additional options for \texttt {simulateGEx}}{13}{subsection.4.3}
+\contentsline {subsubsection}{\numberline {4.3.1}Controlling level of technical variation}{13}{subsubsection.4.3.1}
+\contentsline {section}{\numberline {5}Getting Help}{15}{section.5}
+\contentsline {section}{\numberline {6}SessionInfo}{15}{section.6}
