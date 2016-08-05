@@ -9,7 +9,7 @@ Imports:
     quantro,
     MASS
 Depends:
-    R (>= 3.1.2),
+    R (>= 3.1.1),
     Biobase
 Suggests:
     knitr,

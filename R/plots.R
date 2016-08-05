@@ -34,9 +34,9 @@ plotGExTruth <- function(simulateGExTruthObject)
     round((length(which(geneRange[,x] == 0)) / nGenes )* 100) })
   if(scaleCounts != 0){ geneRangeScaled <- geneRange + scaleCounts }  
   
-  matdensity(log2(geneRangeScaled), col = 1 + 1:nGroups, 
-             xlab = "Simulated RNA molecules on log2 scale", ylab = "density")
-  legend('top', colnames(geneRange), lty = 1, col= 1 + 1:nGroups, bty ="n")  
+  matdensity(log2(geneRangeScaled), ylab = "density",
+             xlab = "Simulated RNA molecules on log2 scale")
+  legend('top', colnames(geneRange), col = 1 + 1:nGroups, lty = 1, bty ="n")  
   
   
 }
@@ -80,13 +80,11 @@ plotGEx <- function(simulateGExObject)
   
   par(mfrow=c(1,2))
   matboxplot(log2(PM), groupFactor = simulateGExObject$pd$Group, 
-             main = "log2(PM Values)", col = 1 + 1:nGroups, range = 0, las=3)
+             main = "log2(PM Values)", range = 0, las=3)
   
   matdensity(log2(PM), groupFactor = simulateGExObject$pd$Group, 
-             col = 1 + 1:nGroups, xlab = "log2(PM Values)", ylab = "density")
+             xlab = "log2(PM Values)", ylab = "density")
   legend('top', groupNames, lty = 1, col= 1 + 1:nGroups, bty ="n")  
-  
-  
   
 }  
 
@@ -126,7 +124,7 @@ plotMethTruth <- function(simulateMethTruthObject)
   plot(density(simulateMethTruthObject$simObs$normObs), xlab = "", 
        main = "Mixture of Normal distributions")
   
-  matdensity(simulateMethTruthObject$methRange, col = 1 + 1:nGroups, 
+  matdensity(simulateMethTruthObject$methRange, 
              xlab = "Simulated Methylation", ylab = "density",
              xlim = c(-0.01,1.01))
   legend('top', colnames(simulateMethTruthObject$methRange), lty = 1, 
@@ -175,24 +173,24 @@ plotMeth <- function(simulateMethObject)
   betaObject <- getBeta(getMethylSet(simulateMethObject), offset = 100)
   
   matboxplot(betaObject, groupFactor = simulateMethObject$pd$Group, 
-             main = "Observed beta values", col = 1 + 1:nGroups)
+             main = "Observed beta values")
   matboxplot(log2(meth), groupFactor = simulateMethObject$pd$Group, 
-             main = "Observed methylation (log2)", col = 1 + 1:nGroups)
+             main = "Observed methylation (log2)")
   matboxplot(log2(unmeth), groupFactor = simulateMethObject$pd$Group, 
-             main = "Observed unmethylation (log2)", col = 1 + 1:nGroups)
+             main = "Observed unmethylation (log2)")
   
   matdensity(betaObject, groupFactor = simulateMethObject$pd$Group, 
-             col = 1 + 1:nGroups, xlab = "Observed beta values",
+             xlab = "Observed beta values",
              ylab = "density", xlim = c(-0.01,1.01))
   legend('top', groupNames, lty = 1, col= 1 + 1:nGroups, bty ="n")  
   
   matdensity(log2(meth), groupFactor = simulateMethObject$pd$Group, 
-             col = 1 + 1:nGroups, xlab = "Observed methylation (log2)", 
+             xlab = "Observed methylation (log2)", 
              ylab = "density")
   legend('top', groupNames, lty = 1, col= 1 + 1:nGroups, bty ="n")  
   
   matdensity(log2(unmeth), groupFactor = simulateMethObject$pd$Group, 
-             col = 1 + 1:nGroups, xlab = "Observed unmethylation (log2)", 
+             xlab = "Observed unmethylation (log2)", 
              ylab = "density")
   legend('top', groupNames, lty = 1, col= 1 + 1:nGroups, bty ="n")  
 }
