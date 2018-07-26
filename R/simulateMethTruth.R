@@ -100,6 +100,10 @@ simulateMethTruth <- function(nProbes, nGroups = 2, nMixtures = 3,
   }    
   
 	if(nGroups == 1){ 
+		
+		diffInd <- NULL
+		
+		
 		methObsMat <- 1 / (1 + exp(-(results$simObs$normObs + 
                                    rnorm(nProbes, 0, 0.01))))
 		output = list("objectType" = "simulateMethTruthObject", 
